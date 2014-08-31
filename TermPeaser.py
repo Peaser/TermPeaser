@@ -1,13 +1,13 @@
 import os, sys, win32pdh, platform, getpass, socket, hashlib, pyperclip, datetime, urllib, utils, random, time
 
-link = "http://pastebin.com/6yT4DxBt"
-rawlink = "http://pastebin.com/raw.php?i=6yT4DxBt"
+link = "https://github.com/Peaser/TermPeaser/blob/master/TermPeaser.py"
+rawlink = "https://raw.githubusercontent.com/Peaser/TermPeaser/master/TermPeaser.py"
 __version__ = '0.2.1'
 
 herenow = os.getcwd()
 
 try:
-    latest = urllib.urlopen('http://pastebin.com/raw.php?i=Bvw9j6f1').read()
+    latest = urllib.urlopen('https://raw.githubusercontent.com/Peaser/TermPeaser/master/Version.txt').read()
     if "Lightspeed" in latest:
         raise Exception, "Update request blocked by web filter."
     if latest == __version__:
@@ -460,7 +460,7 @@ modules:
             ('flood <IP> <Size> <duration>', 'UDP flood (use at own risk)'),
             ('dupefind <directory>', 'Uses checksums to find duplicate files'),
             ('fdupefind <directory>', 'Combines ftree with dupefind'),
-            ('getupdate', 'Download up-to-date version of TermPeaser (.py script)'),
+            ('getupdate', 'Download up-to-date version of TermPeaser'),
             ('other*', 'all other commands executed by command prompt.')
             ]
             print '\n'.join(formatter(d) for d in aboutit)
@@ -585,13 +585,8 @@ modules:
             while goi:
                 if yn == 'y':
                     try:
-                        with open('TermPeaser.py', 'w') as tp:
-                            cont = urllib.urlopen(rawlink).read()
-                            if 'list info about computer' not in cont: raise Exception, "connection denied"
-                            c2 = [i for i in cont if i!='\n']
-                            tp.writelines(c2)
-                            tp.close()
-                        print "Successful Download"
+                        print "Attempting download from github..."
+                        urllib.urlretrieve('https://github.com/Peaser/TermPeaser/archive/master.zip', 'TermPeaser.zip')
                     except Exception, e:
                         print "Unable to get latest version: %s" %str(e)
                     goi = False
