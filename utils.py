@@ -1,10 +1,9 @@
 import collections, string, datetime, random, math, os
 
-"""general utilities"""
+"""general laziness utilities"""
 
 encodings = ['hex', 'base64', 'bz2', 'quopri', 'uu','zlib', 'rot_13','cp037', 'sjis']
-pi = math.pi
-e = math.e
+
 dt = os.environ['userprofile']+'\\Desktop\\' #Desktop EV
 
 class Fail(Exception):
@@ -19,14 +18,6 @@ def dm(p):
     """make directory if it doesn't exist"""
     if not os.path.exists(p):
         os.makedirs(p)
-        
-def rads(n):
-    """degrees to radians"""
-    return n*(pi/180)
-
-def deg(n):
-    """radians to degrees"""
-    return n*(180/pi)
 
 def dupecheck(object,minimum=1):
     """ Check for duplicates in a list, returns the item if it appears more than the minimum. """
@@ -71,12 +62,6 @@ def listshuf(object):
         return b
     else: raise Fail, "Invalid type - must be list."
 
-def removedupes(object):
-    """ Remove duplicate items in a list, returns new list. """
-    if type(object) is list:
-	return list(set(object))
-    else: raise Fail, "Invalid type - must be list."
-
 def listinlist1(given, in_this):
     """ Returns the 'given' object in list form, if it appears in 'in_this'. """
     if type(given) and type(in_this) is list:
@@ -105,8 +90,7 @@ def rechop(object, n):
     return findall('.{%d}'%n,object)
 
 def top(object, default=None):
-    """ Returns most common items in list (tuple).
-    The default is how many (show the top 10?)"""
+    """ Returns most common items in list (tuple)."""
     if default is None: default = len(object)
     if type(object) is list:
         ob = {}
@@ -142,6 +126,8 @@ def replacen(object, char, n):
         replacen("Hello", "x", 2)
     returns:
         "Hxlxo"
+
+    I have no Idea where this would be useful by the way
         """
     return ''.join(char if i % n == 0 else chara for i, chara in enumerate(object, 1))
 
@@ -265,18 +251,9 @@ def SysInfo(Info):
     __all__ = (OS, User, Processor)
     return eval(Info)
 
-def infostream(object, infotype):
+def infos(object, infotype):
     from datetime import datetime as dt
-    """infotypes: (Just examples, you use your own...)
-        '[INFO]',
-        '[DEBUG]',
-        '[WARN]',
-        '[ERROR]',
-        '[FAIL]',
-        '[SUCCESS]',
-        '[GENERAL]'
-
-        EXAMPLE SOURCE CODE:
+    """EXAMPLE:
 
             try:
                 print "Hello" + 2   #String + int = Bad
@@ -311,7 +288,7 @@ def secsFormat(n, asTimeDelta=False, ):
         return(h,m,s)
 
 def isin(iterable, object):
-    """isin(['yes','no'], '.......no.....')  ->  True"""
+    """isin(['yes','no'], 'asdiasno')  ->  True"""
     for i in iterable:
         if i in object:
             return True
@@ -328,19 +305,14 @@ def unintertwine(object, n):
     hefsopuhliciyckt -> ['holy', 'epic', 'fuck', 'shit']"""
     return [object[i::n] for i in range(n)]
 
-def rev(object):
-    """Simply reverse an object.
-    reversed() gives me <reversed object at...> and I am too nooby to know how to fix it."""
-    return object[::-1]
-
 def r(*args):
-    """range() like function based on 1
+    """a range()-like function based on 1 because i'd rather write
+    a whole new function instead of type range(1, n+1)
 
     range(4) = [0,1,2,3]
 
     r(4) = [1,2,3,4]
-
-    range() has it's place in python, and so does r() now."""
+"""
     if len(args) == 0:
         raise ArgumentError, "No arguments provided."
     elif len(args) == 1:
@@ -370,7 +342,7 @@ def percent(part, whole, factor=100):
     return factor * float(part)/float(whole)
 
 def pdo(function, object):
-    """print something aswell as do it too"""
+    """print something as well as do it too"""
     print(object)
     function(object)
 
@@ -385,14 +357,6 @@ def formatter(t, delimiter='-', l=50):
     aa = len(''.join(str(i) for i in t))
     dashes = delimiter*(l-aa)
     return dashes.join(str(i) for i in t)
-
-def dicttup(dict):
-    """Return dictionary formatted as list of tuples
-    Usage:
-        dicttup(d)
-    Returns:
-        [("Key": 1), ("keyhere": 414)]"""
-    return [(i, dict[i]) for i in dict]
 
 def incrup(n, function):
     """List of lists of numbers
