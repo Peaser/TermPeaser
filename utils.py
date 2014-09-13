@@ -1,4 +1,4 @@
-import collections, string, datetime, random, math, os
+import collections, string, datetime, random, math, os, sys
 
 """general laziness utilities"""
 
@@ -14,10 +14,87 @@ class ArgumentError(Exception):
     """Exception raised by invalid arguments"""
     pass
 
+class Encrypt(object):
+    import base64
+    """Obscurity based encryption
+    Usage:
+        Print Encrypt("Hello world!").encode("Password")
+    returns:
+        <whatever the encrypted version of "Hello world!" is>
+    """
+    def __init__(self, string):
+        self.string = string
+
+    def encode(self, password):
+        enc = []
+        for i in range(len(self.string)):
+            key_c = password[i % len(password)]
+            enc_c = chr((ord(self.string[i]) + ord(key_c)) % 256)
+            enc.append(enc_c)
+        return base64.urlsafe_b64encode("".join(enc))
+
+    def decode(self, password):
+        dec = []
+        self.string = base64.urlsafe_b64decode(self.string)
+        for i in range(len(self.string)):
+            key_c = password[i % len(password)]
+            dec_c = chr((256 + ord(self.string[i]) - ord(key_c)) % 256)
+            dec.append(dec_c)
+        return "".join(dec)
+
+class Toggleable(object):
+    """Toggleable boolean value
+    Usage:
+        >>>b = Toggleable(True)
+        >>>b
+        True
+        >>>b.toggle()
+        >>>b
+        False
+
+    It has it's uses."""
+
+    def __init__(self, boolean):
+        self.boolean = boolean
+        if type(self.boolean) is not bool:
+            raise TypeError, 'type {} is not an acceptable type, must be bool'.format(type(self.boolean))
+
+    def __repr__(self):
+        return str(self.boolean)
+
+    def toggle(self):
+        if self.boolean == True:
+            self.boolean = False
+        elif self.boolean == False:
+            self.boolean = True
+
+
+
 def dm(p):
     """make directory if it doesn't exist"""
     if not os.path.exists(p):
         os.makedirs(p)
+
+def nhex(n):
+    """int to 2-byte hex"""
+    if n == 0:
+        return "00"
+    else:
+        return hex(n).rstrip("L").lstrip("0x") or "0"
+
+def hexn(s):
+    """hex to integer"""
+    return int(float.fromhex(s))
+
+def stdout(s):
+    """updatable print that stays in one spot"""
+    sys.stdout.write("{0}\r".format(s))
+    sys.stdout.flush()
+
+def center(s):
+    """center-justify a string on an 80-wide windows terminal"""
+    n = len(s)
+    return ' '*(40-(n/2))+s+' '*(40-(n/2))
 
 def crc(s):
     """Basic Redundancy check"""
@@ -40,13 +117,21 @@ def crc(s):
     return a
 
 def ntlm(s):
+    """ntlm hashing function"""
     import hashlib,binascii
     hash1 = hashlib.new('md4', "s".encode('utf-16le')).digest()
     return binascii.hexlify(hash1)
 
-def tobytes(s):
-    b = [i.encode('hex') for i in s]
-    return ''.join('\\x'+i for i in b)
+def squaredImage(list_of_pixel_tuples):
+    c = math.ceil
+    s = math.sqrt
+    """For PIL"""
+    return (int(c(s(len(list_of_pixel_tuples)))), int(c(s(len(list_of_pixel_tuples)))))
+
+def tobytes(n):
+    """Bytes maker!
+    Turns integer into byte! (0 = NUL, 1 = EOF or whatever it is"""
+    return '{0:02X}'.format(n).lower().decode('hex')
 
 def dupecheck(object,minimum=1):
     """ Check for duplicates in a list, returns the item if it appears more than the minimum. """
@@ -454,7 +539,7 @@ def randprob(dict):
     keys = [i for i in dict]
 
     if sum(parts) != 100:
-        raise ValueError, "The sum of all the keys' values must equal 100."
+        raise ValueError, "The sum of all the keys' values must equal 100. Yours equal {0}".format(sum(parts))
 
     ranges = incrup(parts, r)
     thevalue = random.randint(1,100)
