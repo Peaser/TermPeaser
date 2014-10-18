@@ -2,7 +2,7 @@ import os, sys, win32pdh, platform, getpass, socket, hashlib, pyperclip, datetim
 
 link = "https://github.com/Peaser/TermPeaser/blob/master/TermPeaser.py"
 rawlink = "https://raw.githubusercontent.com/Peaser/TermPeaser/master/TermPeaser.py"
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 
 herenow = os.getcwd()
 
@@ -575,6 +575,10 @@ modules:
                 fdupef(subj)
             except Exception, e:
                 print "Unable to search directory, %s" % str(e)
+        elif w[:9]== "makefile ":
+            args = w[9:]
+            #not implemented... will implement i guess. Im lazy right now
+
         elif w == "getupdate":
             if latest != __version__:
                 print "Current Version: %s. This version: %s. Download update?"%(latest, __version__)
